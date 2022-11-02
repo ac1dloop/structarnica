@@ -30,13 +30,13 @@ namespace Options {
 }
 
 //static array
-template<typename T = int, size_t len = 100>
+template<typename T = int, size_t Length = 100, size_t BaseIndex = 0>
 struct StaticArray {
 
     //create array filled with val
-    consteval StaticArray(const T val, InitOptions<FillType::fill> ignore = Options::Fill)
+    consteval StaticArray(const T val = {}, InitOptions<FillType::fill> ignore = Options::Fill)
     {
-        for (auto i = 0; i < len; i++)
+        for (auto i = 0; i < Length; i++)
             m_data[i] = val;
     }
 
@@ -55,7 +55,7 @@ struct StaticArray {
         for (auto it = lst.begin(); it != lst.end(); it++)
             m_data[i++] = *it;
 
-        for (;i < len;)
+        for (;i < Length;)
             m_data[i++] = val;
     }
 
@@ -63,7 +63,7 @@ struct StaticArray {
     consteval StaticArray(std::initializer_list<T> lst, InitOptions<FillType::repeat_pattern>)
     {
         auto i = 0;
-        for (auto it = lst.begin(); i < len; it++){
+        for (auto it = lst.begin(); i < Length; it++){
             if (it == lst.end()){
                 it = lst.begin();
             }
@@ -85,15 +85,36 @@ struct StaticArray {
     auto begin(){ return std::ranges::begin(m_data); }
     auto cbegin() const { return std::ranges::cbegin(m_data); }
     auto end(){ return std::ranges::end(m_data); }
-    auto cend(){ return std::ranges::cend(m_data); }
+    auto cend() const { return std::ranges::cend(m_data); }
 
-    T& operator[](size_t index){ return m_data[index]; }
+    template<std::unsigned_integral T>
+    T& operator[](T index){ return m_data[index - BaseIndex]; }
 
-    constexpr auto size() const { return len; }
+    template<std::signed_integral T>
+    T& operator[](T index){
+        return index > 0 ? m_data[index - BaseIndex] : m_data[Length + index - 1];
+    }
+
+    //this makes all templated classes StaticArray friends :)
+    template<typename, size_t, size_t>
+    friend struct StaticArray;
+
+    template<size_t Start, size_t End>
+    constexpr auto slice() const {
+        StaticArray<T, (End - Start), BaseIndex> res;
+
+        for (auto i = 0; i < res.size(); ++i){
+            res.m_data[i] = m_data[i];
+        }
+
+        return res;
+    }
+
+    consteval auto size() const { return Length; }
 
 protected:
 
-    T m_data[len]{{}};
+    T m_data[Length]{{}};
 };
 
 } //DS namespace

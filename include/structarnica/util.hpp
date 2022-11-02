@@ -12,6 +12,8 @@
 #include <ranges>
 #include <concepts>
 #include <iostream>
+#include <string_view>
+#include <chrono>
 
 namespace DS {
 
@@ -47,6 +49,52 @@ std::ostream& operator<<(std::ostream& os, T arr){
     return os;
 }
 
+//print name of a type
+//copied from stackoverflow
+template <typename T>
+constexpr auto type_name() {
+  std::string_view name, prefix, suffix;
+#ifdef __clang__
+  name = __PRETTY_FUNCTION__;
+  prefix = "auto type_name() [T = ";
+  suffix = "]";
+#elif defined(__GNUC__)
+  name = __PRETTY_FUNCTION__;
+  prefix = "constexpr auto type_name() [with T = ";
+  suffix = "]";
+#elif defined(_MSC_VER)
+  name = __FUNCSIG__;
+  prefix = "auto __cdecl type_name<";
+  suffix = ">(void)";
+#endif
+  name.remove_prefix(prefix.size());
+  name.remove_suffix(suffix.size());
+  return name;
+}
+
+struct Timer {
+
+    Timer():m_clock{std::chrono::high_resolution_clock::now()}
+    {}
+
+    void reset(){
+        m_clock = std::chrono::high_resolution_clock::now();
+    }
+
+    auto time(){
+        return std::chrono::high_resolution_clock::now() - m_clock;
+    }
+
+    template<typename T>
+    auto time_as(){
+        return std::chrono::duration_cast<T>(time());
+    }
+
+protected:
+
+    decltype(std::chrono::high_resolution_clock::now()) m_clock;
+
+};
 
 } //DS namespace
 

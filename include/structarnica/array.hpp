@@ -33,15 +33,17 @@ namespace Options {
 template<typename T = int, size_t Length = 100, size_t BaseIndex = 0>
 struct StaticArray {
 
+    static_assert(BaseIndex == 0 || BaseIndex == 1, "Base index more than 1 is not allowed");
+
     //create array filled with val
-    consteval StaticArray(const T val = {}, InitOptions<FillType::fill> ignore = Options::Fill)
+    consteval StaticArray(const T val = {}, InitOptions<FillType::fill> Val = Options::Fill)
     {
         for (auto i = 0; i < Length; i++)
             m_data[i] = val;
     }
 
     //copy values from list and rest of array is filled with garbage
-    consteval StaticArray(std::initializer_list<T> lst, InitOptions<FillType::copy> ignore = Options::Copy)
+    consteval StaticArray(std::initializer_list<T> lst, InitOptions<FillType::copy> Val = Options::Copy)
     {
         auto i = 0;
         for (auto it = lst.begin(); it != lst.end(); it++)
@@ -49,7 +51,7 @@ struct StaticArray {
     }
 
     //copy values from list and fill rest of array with desired values
-    consteval StaticArray(const T val, std::initializer_list<T> lst, InitOptions<FillType::copy_n_fill> ignore = Options::Copy_and_fill)
+    consteval StaticArray(const T val, std::initializer_list<T> lst, InitOptions<FillType::copy_n_fill> Val = Options::Copy_and_fill)
     {
         auto i = 0;
         for (auto it = lst.begin(); it != lst.end(); it++)
@@ -87,12 +89,14 @@ struct StaticArray {
     auto end(){ return std::ranges::end(m_data); }
     auto cend() const { return std::ranges::cend(m_data); }
 
-    template<std::unsigned_integral T>
-    T& operator[](T index){ return m_data[index - BaseIndex]; }
+    template<std::unsigned_integral IndexType>
+    constexpr T& operator[](IndexType index){
+        return m_data[index - BaseIndex]; 
+    }
 
-    template<std::signed_integral T>
-    T& operator[](T index){
-        return index > 0 ? m_data[index - BaseIndex] : m_data[Length + index - 1];
+    template<std::signed_integral IndexType>
+    constexpr T& operator[](IndexType index){
+        return index >= 0 ? m_data[index - BaseIndex] : m_data[Length + index];
     }
 
     //this makes all templated classes StaticArray friends :)

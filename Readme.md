@@ -4,3 +4,5 @@ Repository of mine implementation of popular and not so data structures for educ
 Use of C++20 features is intended
 
 * [List of data structures](https://en.wikipedia.org/wiki/List_of_data_structures)
+
+Directory tests contains examples of usage

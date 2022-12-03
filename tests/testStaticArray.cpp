@@ -39,7 +39,7 @@ int main(){
         assert(arr2[i] == i + 1);
     }
 
-    for (int i = 10; i < arr2.size(); i++){
+    for (auto i = 10; i < arr2.size(); i++){
         assert(arr2[i] == 0);
     }
 
@@ -56,7 +56,7 @@ int main(){
         assert(arr3[i] == i + 1);
     }
 
-    for (int i = 5; i < arr3.size(); i++){
+    for (auto i = 5; i < arr3.size(); i++){
         assert(arr3[i] == -20);
     }
 

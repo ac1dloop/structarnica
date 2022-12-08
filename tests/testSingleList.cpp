@@ -167,7 +167,27 @@ void test_operators() {
 }
 
 void test_iterators() {
+    cout << "test_iterators()\n";
+    DS::SList<int> lst{1,2,3,4,5,6,7};
 
+    for (const auto& x : lst)
+        std::cout << x << '\n';
+
+    auto it = std::find(lst.begin(), lst.end(), 3);
+    
+    std::cout << *it << '\n';
+
+    lst.erase(it);
+
+    lst.print_list();
+
+    lst = DS::SList<int>{1,2,3,4,5,6,7,8,9};
+
+    it = std::find(lst.begin(), lst.end(), 4);
+
+    lst.erase(it, lst.end());
+
+    lst.print_list();
 }
 
 int main(){
@@ -175,18 +195,7 @@ int main(){
     test_constructors();
     test_member_functions();
     test_erase();
-    
-    auto lst = DS::SList<int>{1,2,3,4,5,6};
-
-    lst = DS::SList<int>{1,2,3};
-
-    lst.print_list();
-
-    lst.erase(2);
-
-    lst.print_list();
-
-    cout << "sz: " << lst.size() << '\n';
+    test_iterators();
 
     return 0;
 }

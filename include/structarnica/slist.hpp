@@ -10,6 +10,64 @@ namespace DS {
 template<typename T>
 struct SList {
 
+    struct Iterator {
+
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+        using INode = SList<T>::Node*;
+
+        public:
+
+        Iterator() = default;
+
+        explicit Iterator(INode ptr):m_ptr{ptr} {}
+
+        Iterator(const Iterator& other) {
+            m_ptr = other.m_ptr;
+        }
+
+        Iterator& operator=(const Iterator& other) {
+            m_ptr = other.m_ptr;
+            return *this;
+        }
+
+        reference operator*() {
+            return m_ptr->data;
+        }
+
+        Iterator operator++() {
+            m_ptr = m_ptr->next;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator tmp(*this);
+            ++(*this);
+            return tmp;
+        }
+
+        bool operator==(const Iterator& other) {
+            return m_ptr == other.m_ptr;
+        }
+
+        bool operator!=(const Iterator& other) {
+            return m_ptr != other.m_ptr;
+        }
+
+        friend SList<T>;
+
+    private:
+        
+        INode m_ptr{nullptr};
+
+    };
+
+    using iterator = SList<T>::Iterator;
+    using const_iterator = SList<const T>::Iterator;
+
 public:
 
     SList() {}
@@ -58,6 +116,12 @@ public:
 
         clear();
     }
+
+    //stl support
+    iterator begin() { return iterator(m_head); }
+    iterator end() { return iterator(nullptr); }
+    const_iterator cbegin() const { return iterator(m_head); }
+    const_iterator cend() const { return iterator(nullptr); }
 
     //list api to use without stl
     std::size_t size() const {
@@ -228,11 +292,59 @@ public:
         return ret;
     }
 
+    void erase(iterator from, iterator until) {
+        Iterator prev;
+        for (auto it = begin(); it != from;){
+            prev = it++;
+        }
+
+        if (!prev.m_ptr)
+            return;
+
+        for(;;){
+            if (from == until)
+                break;
+            auto t = from.m_ptr;
+            ++from;
+            delete t;
+        }
+
+        prev.m_ptr->next = until.m_ptr;
+        m_tail = until.m_ptr;
+    }
+
+    bool erase(iterator it) {
+        if (!it.m_ptr)
+            return false;
+
+        if (it == begin()){
+            pop_front();
+            return true;
+        }
+
+        Iterator prev(m_head);
+        Iterator curr(m_head->next);
+
+        for (;;){
+            if (!curr.m_ptr)
+                break;
+            if (curr == it)
+                break;
+            prev = curr++;
+        }
+
+        prev.m_ptr->next = curr.m_ptr->next;
+        if (it.m_ptr == m_tail)
+            m_tail = prev.m_ptr;
+        delete curr.m_ptr;
+        return true;
+    }
+
     bool erase(T val) {
         if (!m_head)
             return false;
 
-        if (size() == 1){
+        if (m_head == m_tail){
             if (m_head->data == val){
                 clear();
                 return true;

@@ -164,6 +164,33 @@ void test_erase() {
 
 //basic testing of all functions
 void test_operators() {
+    cout << "test_operators()\n";
+    DS::SList<int> lst;
+
+    assert(!lst);
+
+    lst = DS::SList<int>{1,2,3,4};
+
+    assert(lst);
+
+    auto lst2 = lst + DS::SList<int>{8,8,8,8};
+    assert(!(lst == lst2));
+    assert(lst != lst2);
+
+    lst2.print_list();
+
+    assert(lst2.size() == 8);
+
+    lst2 += DS::SList<int>{9,9,9};
+
+    lst2.print_list();
+
+    assert(lst2.size() == 11);
+
+    auto lst3 = DS::SList<int>{1,2,3,4};
+
+    assert(lst3 == lst);
+    assert(lst3 != lst2);
 }
 
 void test_iterators() {
@@ -196,6 +223,7 @@ int main(){
     test_member_functions();
     test_erase();
     test_iterators();
+    test_operators();
 
     return 0;
 }

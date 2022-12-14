@@ -7,6 +7,8 @@
 
 namespace DS {
 
+//Single linked list class
+//holds pointers to head and tail for faster insert operations
 template<typename T>
 struct SList {
 
@@ -115,6 +117,57 @@ public:
             return;
 
         clear();
+    }
+
+    SList copy() {
+        SList res;
+
+        for (Node* it = m_head; it; it = it->next)
+            res.push_back(it->data);
+
+        return res;
+    }
+
+    bool operator==(const SList& other) {
+        Node* it1 = m_head;
+        Node* it2 = other.m_head;
+
+        for (;;){
+            if (it1 == nullptr || it2 == nullptr)
+                break;
+
+            if (it1->data != it2->data)
+                return false;
+
+            it1 = it1->next;
+            it2 = it2->next;
+        }
+
+        return it1 == it2 ? true : false;
+    }
+
+    bool operator!=(const SList& other) {
+        return !(*this == other);
+    }
+
+    operator bool() {
+        return !empty();
+    }
+
+    SList operator+(SList&& other) {
+        SList res = copy();
+
+        for (auto x : other)
+            res.push_back(x);
+
+        return res;
+    }
+
+    SList& operator+=(SList&& other) {
+        for (auto x : other)
+            push_back(x);
+            
+        return *this;
     }
 
     //stl support

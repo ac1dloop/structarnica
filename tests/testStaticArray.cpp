@@ -39,7 +39,7 @@ int main(){
         assert(arr2[i] == i + 1);
     }
 
-    for (auto i = 10; i < arr2.size(); i++){
+    for (size_t i = 10; i < arr2.size(); i++){
         assert(arr2[i] == 0);
     }
 
@@ -56,7 +56,7 @@ int main(){
         assert(arr3[i] == i + 1);
     }
 
-    for (auto i = 5; i < arr3.size(); i++){
+    for (size_t i = 5; i < arr3.size(); i++){
         assert(arr3[i] == -20);
     }
 
@@ -116,7 +116,7 @@ int main(){
     cout << arr6[2] << '\n';
 
     //create slice from array [Start, End)
-    auto sliced = arr6.slice<0, 3>();
+    auto sliced = arr6.slice<0ULL, 3ULL>();
 
     assert(sliced[0] == 1);
     assert(sliced[1] == 2);

@@ -2,6 +2,8 @@
 #define ARRAY_HPP
 
 #include <concepts>
+#include <initializer_list>
+#include <algorithm>
 
 namespace DS {
 
@@ -30,26 +32,26 @@ namespace Options {
 }
 
 //static array
-template<typename T = int, size_t Length = 100, size_t BaseIndex = 0>
+template<typename T = int, std::size_t Length = 100, std::size_t BaseIndex = 0>
 struct StaticArray {
 
     static_assert(BaseIndex == 0 || BaseIndex == 1, "Base index more than 1 is not allowed");
 
     //create array filled with val
-    consteval StaticArray(const T val = {}, InitOptions<FillType::fill> Val = Options::Fill) {
+    consteval StaticArray(const T val = {}) {
         for (auto i = 0; i < Length; i++)
             m_data[i] = val;
     }
 
     //copy values from list and rest of array is filled with garbage
-    consteval StaticArray(std::initializer_list<T> lst, InitOptions<FillType::copy> Val = Options::Copy) {
+    consteval StaticArray(std::initializer_list<T> lst) {
         auto i = 0;
         for (auto it = lst.begin(); it != lst.end(); it++)
             m_data[i++] = *it;
     }
 
     //copy values from list and fill rest of array with desired values
-    consteval StaticArray(const T val, std::initializer_list<T> lst, InitOptions<FillType::copy_n_fill> Val = Options::Copy_and_fill) {
+    consteval StaticArray(const T val, std::initializer_list<T> lst) {
         auto i = 0;
         for (auto it = lst.begin(); it != lst.end(); it++)
             m_data[i++] = *it;
@@ -102,7 +104,7 @@ struct StaticArray {
     constexpr auto slice() const {
         StaticArray<T, (End - Start), BaseIndex> res;
 
-        for (auto i = 0; i < res.size(); ++i){
+        for (size_t i = 0; i < res.size(); ++i){
             res.m_data[i] = m_data[i];
         }
 

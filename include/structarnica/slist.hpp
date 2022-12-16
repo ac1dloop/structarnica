@@ -1,16 +1,44 @@
+#ifndef SLIST_HPP
+#define SLIST_HPP
+
 #include <memory>
 #include <iterator>
-#include <exception>
 #include <optional>
 #include <iostream>
 #include <sstream>
 
 namespace DS {
 
-//Single linked list class
+//Singly Linked list class
 //holds pointers to head and tail for faster insert operations
 template<typename T>
-struct SList {
+class SList {
+
+private:
+
+    struct Node {
+
+        explicit Node(T val):data{val} {}
+
+        Node(T val, Node* next_node):data{val}, next{next_node} {}
+
+        T data;
+        Node* next{nullptr};
+    };
+
+    std::pair<Node*, int> _find(T val) {
+        int pos = 0;
+        for (Node* it = m_head; it != nullptr; it = it->next, pos++)
+            if (it->data == val)
+                return {it, pos};
+
+        return {nullptr, pos};
+    }
+
+    Node* m_head{nullptr};
+    Node* m_tail{nullptr};
+
+public:
 
     struct Iterator {
 
@@ -51,26 +79,24 @@ struct SList {
             return tmp;
         }
 
-        bool operator==(const Iterator& other) {
+        bool operator==(const Iterator& other) const {
             return m_ptr == other.m_ptr;
         }
 
-        bool operator!=(const Iterator& other) {
+        bool operator!=(const Iterator& other) const {
             return m_ptr != other.m_ptr;
         }
 
         friend SList<T>;
 
     private:
-        
+
         INode m_ptr{nullptr};
 
     };
 
     using iterator = SList<T>::Iterator;
-    using const_iterator = SList<const T>::Iterator;
-
-public:
+    using const_iterator = typename SList<const T>::Iterator;
 
     SList() {}
 
@@ -86,11 +112,8 @@ public:
     }
 
     SList(const SList& other) {
-        for (Node* it = other.m_head; it != nullptr; it = it->next){
-            push_front(it->data);
-        }
-
-        reverse();
+        for (Node* it = other.m_head; it != nullptr; it = it->next)
+            push_back(it->data);
     }
 
     SList& swap(SList&& other) {
@@ -128,7 +151,7 @@ public:
         return res;
     }
 
-    bool operator==(const SList& other) {
+    bool operator==(const SList& other) const {
         Node* it1 = m_head;
         Node* it2 = other.m_head;
 
@@ -146,7 +169,7 @@ public:
         return it1 == it2 ? true : false;
     }
 
-    bool operator!=(const SList& other) {
+    bool operator!=(const SList& other) const {
         return !(*this == other);
     }
 
@@ -266,14 +289,14 @@ public:
         if (m_head)
             return m_head->data;
 
-        throw std::exception("accessing element of empty list");
+        throw std::logic_error("accessing element of empty list");
     }
 
     T& back() const {
         if (m_tail)
             return m_tail->data;
 
-        throw std::exception("accessing element of empty list");
+        throw std::logic_error("accessing element of empty list");
     }
 
     void push_back(T val){
@@ -465,31 +488,9 @@ public:
     }
 
 #endif
-
-private:
-
-    struct Node {
-
-        explicit Node(T val):data{val} {}
-
-        Node(T val, Node* next_node):data{val}, next{next_node} {}
-
-        T data;
-        Node* next{nullptr};
-    };
-
-    std::pair<Node*, int> _find(T val) {
-        int pos = 0;
-        for (Node* it = m_head; it != nullptr; it = it->next, pos++)
-            if (it->data == val)
-                return {it, pos};
-
-        return {nullptr, pos};
-    }
-
-    Node* m_head{nullptr};
-    Node* m_tail{nullptr};
     
 };
 
 }//DS namespace
+
+#endif //SLIST_HPP

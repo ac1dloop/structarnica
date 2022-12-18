@@ -32,14 +32,14 @@ void test_constructors() {
     ints3.print_list();
 
     //init from other list
-    DS::SList<int> ints4{ints3};
+    DS::SList<int> ints4(ints3);
 
     assert(!ints4.empty());
     assert(ints4.size() == ints3.size());
     ints4.print_list();
 
     //init from other moved list
-    DS::SList<int> ints5{DS::SList<int>{10,20,30,40,50}};
+    DS::SList<int> ints5(DS::SList<int>{10,20,30,40,50});
     assert(!ints5.empty());
     assert(ints5.size() == 5);
     ints5.print_list();

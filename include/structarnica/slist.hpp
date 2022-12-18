@@ -463,6 +463,8 @@ public:
             prev = it;
             it = it->next;
         }
+
+        return true;
     }
 
     std::string to_string() {

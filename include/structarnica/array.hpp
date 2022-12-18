@@ -39,7 +39,7 @@ struct StaticArray {
 
     //create array filled with val
     consteval StaticArray(const T val = {}) {
-        for (auto i = 0; i < Length; i++)
+        for (size_t i = 0; i < Length; i++)
             m_data[i] = val;
     }
 
@@ -52,7 +52,7 @@ struct StaticArray {
 
     //copy values from list and fill rest of array with desired values
     consteval StaticArray(const T val, std::initializer_list<T> lst) {
-        auto i = 0;
+        size_t i = 0;
         for (auto it = lst.begin(); it != lst.end(); it++)
             m_data[i++] = *it;
 
@@ -62,7 +62,7 @@ struct StaticArray {
 
     //copy values from list untill array filled with pattern
     consteval StaticArray(std::initializer_list<T> lst, InitOptions<FillType::repeat_pattern>) {
-        auto i = 0;
+        size_t i = 0;
         for (auto it = lst.begin(); i < Length; it++){
             if (it == lst.end()){
                 it = lst.begin();

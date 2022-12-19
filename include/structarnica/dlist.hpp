@@ -368,7 +368,7 @@ public:
     }
 
     iterator begin() { return iterator(m_head); }
-    iterator end() { return iterator{nullptr}; }
+    iterator end() { return iterator(nullptr); }
     const_iterator cbegin() const { return iterator(m_head); }
     const_iterator cend() const { return iterator(nullptr); }
 

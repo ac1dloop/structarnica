@@ -30,9 +30,11 @@ enable_testing()
 add_executable(static_array tests/testStaticArray.cpp)
 add_executable(ssl tests/testSingleList.cpp)
 add_executable(dsl tests/testDoubleList.cpp)
+add_executable(circlist tests/testCircularList.cpp)
 add_test(NAME testStaticArray COMMAND static_array)
 add_test(NAME testSingleList COMMAND ssl)
 add_test(NAME testDoublyLinkedList COMMAND dsl)
+add_test(NAME testCircularList COMMAND circlist)
 
 
 include_directories(./include)

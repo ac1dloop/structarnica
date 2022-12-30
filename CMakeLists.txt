@@ -32,11 +32,13 @@ add_executable(ssl tests/testSingleList.cpp)
 add_executable(dsl tests/testDoubleList.cpp)
 add_executable(circlist tests/testCircularList.cpp)
 add_executable(skiplist tests/testSkipList.cpp)
+add_executable(bst tests/testiBinarySearchTree.cpp)
 add_test(NAME testStaticArray COMMAND static_array)
 add_test(NAME testSingleList COMMAND ssl)
 add_test(NAME testDoublyLinkedList COMMAND dsl)
 add_test(NAME testCircularList COMMAND circlist)
 add_test(NAME testSkipList COMMAND skiplist)
+add_test(NAME testBST COMMAND bst)
 
 
 include_directories(./include)

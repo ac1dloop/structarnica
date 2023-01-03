@@ -85,8 +85,6 @@ public:
     }
 
     void insert(const T& val) {
-        Compare comp;
-
         Node* it = m_root;
         Node* prev = nullptr;
 
@@ -197,7 +195,6 @@ public:
     void erase(const T& val) {
         Node* it = m_root;
         Node* prev = nullptr;
-        Compare comp;
         for (;it;){
             if (val == it->_data)
                 break;
@@ -385,7 +382,6 @@ private:
     }
 
     Node* _find(Node* root, const T& val) const {
-        Compare comp;
         for (;root;){
             if (val == root->_data)
                 return root;
@@ -423,6 +419,8 @@ private:
             func(root->_data);
         }
     }
+
+    Compare comp;
 
     Node* m_root{nullptr};
 
